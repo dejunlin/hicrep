@@ -57,7 +57,7 @@ def sccOfDiag(diag1: np.ndarray, diag2: np.ndarray):
 
 
 def hicrepSCC(cool1: cooler.api.Cooler, cool2: cooler.api.Cooler,
-              h: int, dMax: int, bDownSample: bool):
+              h: int, dBPMax: int, bDownSample: bool):
     """Compute hicrep score between two input Cooler contact matrices
 
     Args:
@@ -65,14 +65,28 @@ def hicrepSCC(cool1: cooler.api.Cooler, cool2: cooler.api.Cooler,
         cool2: `cooler.api.Cooler` Input Cooler contact matrix 2
         h: `int` Half-size of the mean filter used to smooth the
         input matrics
-        dMax `int` Only use elements in the inputs at most this
-        number of diagonal offsets away
+        dBPMax `int` Only include contacts that are at most this genomic
+        distance (bp) away
         bDownSample: `bool` Down sample the input with more contacts
         to the same number of contacts as in the other input
 
     Returns:
         `float` scc scores for each chromosome
     """
+    binSize1 = cool1.info['bin-size']
+    binSize2 = cool2.info['bin-size']
+    assert binSize1 == binSize2,\
+        f"Input cool files {fmcool1} and {fmcool2} have different bin sizes"
+    assert cool1.info['nbins'] == cool2.info['nbins'],\
+        f"Input cool files {fmcool1} and {fmcool2} have different number of bins"
+    assert cool1.info['nchroms'] == cool2.info['nchroms'],\
+        f"Input cool files {fmcool1} and {fmcool2} have different number of chromosomes"
+    assert (cool1.chroms()[:] == cool2.chroms()[:]).all()[0],\
+        f"Input file {fmcool1} and {fmcool2} have different chromosome names"
+    binSize = binSize1
+    assert dBPMax > binSize, f"Input dBPmax is smaller than binSize"
+    # this is the exclusive upper bound
+    dMax = dBPMax // binSize + 1
     p1 = cool2pixels(cool1)
     p2 = cool2pixels(cool2)
     bins1 = cool1.bins()

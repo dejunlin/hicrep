@@ -61,17 +61,16 @@ h = 1
 
 # maximal genomic distance to include in the calculation
 dBPMax = 500000
-dMax = dBPMax // binSize + 1
 
 # whether to perform down-sampling or not 
 # if set True, it will bootstrap the data set # with larger contact counts to
-the same number of contacts as in the other data set; otherwise, the contact 
+# the same number of contacts as in the other data set; otherwise, the contact 
 # matrices will be normalized by the respective total number of contacts
 bDownSample = False
 
 # compute the SCC score
 # this will result in a SCC score for each chromosome available in the data set
-scc = hicrepSCC(cool1, cool2, h, dMax, bDownSample)
+scc = hicrepSCC(cool1, cool2, h, dBPMax, bDownSample)
 
 ```
 

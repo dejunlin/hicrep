@@ -35,10 +35,7 @@ def testFlyHiC():
         f"Input cool files {fmcool1} and {fmcool2} have different number of chromosomes"
     assert (cool1.chroms()[:] == cool2.chroms()[:]).all()[0],\
         f"Input file {fmcool1} and {fmcool2} have different chromosome names"
-    binSize = binSize1
-    # this is the exclusive upper bound
-    dMax = dBPMax // binSize + 1
-    results = hicrepSCC(cool1, cool2, h, dMax, bDownSample)
+    results = hicrepSCC(cool1, cool2, h, dBPMax, bDownSample)
     expected = np.array([9.936753824600870e-01, 9.950138992224218e-01,
                          9.951519844417879e-01, 9.935973973292749e-01,
                          9.933660605077106e-01, 9.927681695925705e-01,

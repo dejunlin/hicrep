@@ -75,19 +75,6 @@ def main(*args):
     cool1, binSize1 = readMcool(fmcool1, binSize)
     cool2, binSize2 = readMcool(fmcool2, binSize)
 
-    assert cool1.info['nbins'] == cool2.info['nbins'],\
-        f"Input cool files {fmcool1} and {fmcool2} have different number of bins"
-    assert binSize1 == binSize2,\
-        f"Input cool files {fmcool1} and {fmcool2} have different bin sizes"
-    assert cool1.info['nchroms'] == cool2.info['nchroms'],\
-        f"Input cool files {fmcool1} and {fmcool2} have different number of chromosomes"
-    assert (cool1.chroms()[:] == cool2.chroms()[:]).all()[0],\
-        f"Input file {fmcool1} and {fmcool2} have different chromosome names"
-
-    binSize = binSize1
-    # this is the exclusive upper bound
-    dMax = dBPMax // binSize + 1
-
-    scc = hicrepSCC(cool1, cool2, h, dMax, bDownSample)
+    scc = hicrepSCC(cool1, cool2, h, dBPMax, bDownSample)
 
     np.savetxt(fout, scc, "%30.15e", header=header)
