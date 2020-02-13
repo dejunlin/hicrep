@@ -1,5 +1,9 @@
 # hicrep
 
+[![Build Status](https://travis-ci.org/dejunlin/hicrep.svg?branch=master)](https://travis-ci.org/dejunlin/hicrep)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![PyPI version](https://badge.fury.io/py/hicrep.svg)](https://badge.fury.io/py/hicrep)
+
 Python implementation of the HiCRep: a stratum-adjusted correlation coefficient (SCC) for Hi-C data with support for Cooler sparse contact matrices
 
 The algorithm is published in 
@@ -10,7 +14,7 @@ This implementation takes a pair of Hi-C data sets in Cooler format (.cool for s
 
 The HiCRep SCC computed from this implementaion is consistent with the original R implementaion (https://github.com/MonkeyLB/hicrep/) and it's more than 10x faster than the R version:
 
-<img src="images/sccs.png" width="500">
+<p><img src="images/sccs.png" alt="comparison" width="300"/></p>
 
 ### Usage
 
@@ -83,7 +87,7 @@ or
 ```
 hicrep mydata1.cool mydata2.cool outputSCC.txt --h 1 --dBPMax 500000 
 ```
-To see the list of command line options:
+The output `outputSCC.txt` has a list of SCC scores for each chromosome in the input. To see the list of command line options:
 ```
 hicrep -h
 ```
