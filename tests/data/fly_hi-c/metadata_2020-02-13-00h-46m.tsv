@@ -1,0 +1,10 @@
+###	N.B.: File summary located at bottom of TSV file.					Suggested command to download: 			cut -f 1 ./metadata_2020-02-13-00h-46m.tsv | tail -n +3 | grep -v ^# | xargs -n 1 curl -O -L [--user <access_key_id>:<access_key_secret>]
+File Download URL	Experiment Set Accession	Experiment Accession	File Accession	Size	md5sum	File Type	File Format	Experiment Type	Bio Rep No	Tech Rep No	Biosource	Biosource Type	Organism	Assay Details	Related File Relationship	Related File	Paired end	Lab	Project	Set Status	File Status	Publication
+https://data.4dnucleome.org/files-processed/4DNFI8DRD739/@@download/4DNFI8DRD739.mcool	4DNESFI64TG3	4DNEX943Z1OX, 4DNEXZEXDG8I	4DNFI8DRD739	406230955	N/A	contact matrix	mcool	in situ Hi-C	2, 1	1, 1	S2	immortalized cell line	fruit fly	Enzyme: MboI	N/A	N/A	N/A	John Lis, CORNELL	4DN	released	released	Ray J et al. (2019)
+https://data.4dnucleome.org/files-processed/4DNFIZ1ZVXC8/@@download/4DNFIZ1ZVXC8.mcool	4DNESFOADERB	4DNEXO295N7Z, 4DNEXQW29MIY	4DNFIZ1ZVXC8	338858418	N/A	contact matrix	mcool	in situ Hi-C	1, 2	1, 1	S2	immortalized cell line	fruit fly	Enzyme: MboI	N/A	N/A	N/A	John Lis, CORNELL	4DN	released	released	Ray J et al. (2019)
+###		
+###	Summary	
+###		
+###	Files Selected for Download:			2	
+###	Total File Rows:			2	
+###	Unique Downloadable Files:			2	
