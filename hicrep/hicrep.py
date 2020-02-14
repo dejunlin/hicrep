@@ -84,9 +84,16 @@ def hicrepSCC(cool1: cooler.api.Cooler, cool2: cooler.api.Cooler,
     assert (cool1.chroms()[:] == cool2.chroms()[:]).all()[0],\
         f"Input file {fmcool1} and {fmcool2} have different chromosome names"
     binSize = binSize1
-    assert dBPMax > binSize, f"Input dBPmax is smaller than binSize"
-    # this is the exclusive upper bound
-    dMax = dBPMax // binSize + 1
+    if dBPMax == -1:
+        # In general, don't use the entire contact matrix because usually the last 
+        # few diagonals have very few valid data in it for computing Pearson's correlation
+        warnings.warn(f"Using dBPMax == -1 risk numerical instability at farthest "\
+                      f"diagonals for computing Pearon's correlation", RuntimeWarning)
+        # this is the exclusive upper bound
+        dMax = cool1.info['nbins']
+    else:
+        dMax = dBPMax // binSize + 1
+    assert dMax > 1, f"Input dBPmax is smaller than binSize"
     p1 = cool2pixels(cool1)
     p2 = cool2pixels(cool2)
     bins1 = cool1.bins()
