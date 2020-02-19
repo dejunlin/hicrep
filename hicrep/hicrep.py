@@ -53,6 +53,8 @@ def sccOfDiag(diag1: np.ndarray, diag2: np.ndarray):
     # in the variance calculation, which I don't think it make sense
     # here
     ws = iN * np.sqrt(np.var(iDiagVS1, ddof=1)*np.var(iDiagVS2, ddof=1))
+    if math.isnan(rho) or math.isnan(ws):
+        return (np.nan, np.nan)
     return (rho, ws)
 
 
