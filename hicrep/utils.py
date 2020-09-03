@@ -145,25 +145,6 @@ def meanFilterSparse(a: sp.coo_matrix, h: int):
     ansNoEdge.data /= nNeighbors
     return ansNoEdge
 
-
-def vstran(a: np.ndarray):
-    """compute the empirical CDF at each ranked element
-    this is the so-called variance stabilizing xformation
-    scipy.stats.rankdata doesn't have a method to randomly break
-    the original order of tied elements, unlike the R implementation,
-    so I use numpy quicksort, which could break the ties somewhat
-    randomly
-
-    Args:
-        a: `np.ndarray` input array to be transformed
-
-    Returns:
-        `np.ndarray` transformed array
-    """
-    aRank = np.argsort(a, kind='quicksort') + 1
-    return ECDF(aRank)(aRank)
-
-
 def resample(m: sp.coo_matrix, size: int):
     """Resample with replacement the input matrix so that the
     resulting matrix sum to the given size
@@ -181,4 +162,3 @@ def resample(m: sp.coo_matrix, size: int):
     ans = sp.coo_matrix((sampledData, (m.row, m.col)), shape=m.shape)
     ans.eliminate_zeros()
     return ans
-
