@@ -11,12 +11,39 @@
 import numpy as np
 from hicrep.utils import (
     readMcool, cool2pixels, getSubCoo,
-    trimDiags, meanFilterSparse, vstran,
+    trimDiags, meanFilterSparse,
     resample
     )
 from hicrep.hicrep import (
     sccOfDiag, hicrepSCC
     )
+
+def testHumanHiC():
+    fmcool1 = "tests/data/human_hi-c/4DNFITKCX2DO.cool"
+    fmcool2 = "tests/data/human_hi-c/4DNFIQ5XCHDB.cool"
+    binSize = 500000
+    h = 0
+    dBPMax = 5000000
+    bDownSample = False
+    cool1, _ = readMcool(fmcool1, -1)
+    cool2, _ = readMcool(fmcool2, -1)
+
+    #Test that the scc scores between a matrix and itself are always 1
+    results = hicrepSCC(cool1, cool1, h, dBPMax, bDownSample)
+    assert np.isclose(results, 1).all(),\
+        f"SCC scores between {fmcool1} and itself are not 1"
+
+    #Test that the scc scores agree with the previous R implementation
+    results = hicrepSCC(cool1, cool2, h, dBPMax, bDownSample)
+    #Values given by R implementation of hicrep with same parameters
+    expected = np.array([0.73050741, 0.67516601, 0.65743544, 0.74419469,
+                        0.75864553, 0.75172288, 0.79556107, 0.66194007,
+                        0.7141874,  0.78722237, 0.77622226, 0.77451858,
+                        0.73061994, 0.70921468, 0.7447885,  0.75176337,
+                        0.77104526, 0.83237602, 0.79166534, 0.80379132,
+                        0.7504225,  0.64200014, 0.84293773, 0.79261671])
+    assert np.isclose(results, expected).all(),\
+        f"SCC scores between {fmcool1} and {fmcool2} differ from those given by the R implementation"
 
 def testFlyHiC():
     fmcool1 = "tests/data/fly_hi-c/4DNFI8DRD739_bin100kb.cool"

@@ -21,7 +21,7 @@ import warnings
 import cooler
 from hicrep.utils import (
     readMcool, cool2pixels, getSubCoo,
-    trimDiags, meanFilterSparse, vstran,
+    trimDiags, meanFilterSparse, varVstran,
     resample
     )
 
@@ -44,15 +44,10 @@ def sccOfDiag(diag1: np.ndarray, diag2: np.ndarray):
         return (np.nan, np.nan)
     iDiagNZ1 = diag1[idxNZ]
     iDiagNZ2 = diag2[idxNZ]
-    # variance stabilizing xformation -- these are for geometric
-    # average of the variances only
-    iDiagVS1 = vstran(iDiagNZ1)
-    iDiagVS2 = vstran(iDiagNZ2)
     rho = np.corrcoef(iDiagNZ1, iDiagNZ2)[0, 1]
-    # the original R implementation impose Bessel's correction
-    # in the variance calculation, which I don't think it make sense
-    # here
-    ws = iN * np.sqrt(np.var(iDiagVS1, ddof=1)*np.var(iDiagVS2, ddof=1))
+    iDiagVarVstran1 = varVstran(iDiagNZ1)
+    iDiagVarVstran2 = varVstran(iDiagNZ2)
+    ws = iN * np.sqrt(iDiagVarVstran1 * iDiagVarVstran2)
     if math.isnan(rho) or math.isnan(ws):
         return (np.nan, np.nan)
     return (rho, ws)
@@ -78,16 +73,16 @@ def hicrepSCC(cool1: cooler.api.Cooler, cool2: cooler.api.Cooler,
     binSize1 = cool1.info['bin-size']
     binSize2 = cool2.info['bin-size']
     assert binSize1 == binSize2,\
-        f"Input cool files {fmcool1} and {fmcool2} have different bin sizes"
+        f"Input cool files have different bin sizes"
     assert cool1.info['nbins'] == cool2.info['nbins'],\
-        f"Input cool files {fmcool1} and {fmcool2} have different number of bins"
+        f"Input cool files have different number of bins"
     assert cool1.info['nchroms'] == cool2.info['nchroms'],\
-        f"Input cool files {fmcool1} and {fmcool2} have different number of chromosomes"
+        f"Input cool files have different number of chromosomes"
     assert (cool1.chroms()[:] == cool2.chroms()[:]).all()[0],\
-        f"Input file {fmcool1} and {fmcool2} have different chromosome names"
+        f"Input file have different chromosome names"
     binSize = binSize1
     if dBPMax == -1:
-        # In general, don't use the entire contact matrix because usually the last 
+        # In general, don't use the entire contact matrix because usually the last
         # few diagonals have very few valid data in it for computing Pearson's correlation
         warnings.warn(f"Using dBPMax == -1 risk numerical instability at farthest "\
                       f"diagonals for computing Pearon's correlation", RuntimeWarning)

@@ -5,7 +5,7 @@ import sys
 import warnings
 from hicrep.utils import (
     readMcool, cool2pixels, getSubCoo,
-    trimDiags, meanFilterSparse, vstran,
+    trimDiags, meanFilterSparse, varVstran,
     resample
     )
 from hicrep.hicrep import (
