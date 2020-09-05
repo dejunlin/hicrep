@@ -1,6 +1,7 @@
 language: python
 python:
   - 3.7.6
+  - 3.8
 before_install:
   - python3 --version
   - pip3 install -U pip
@@ -12,3 +13,23 @@ install:
 script: python3 -m pytest
 after_success:
   - python 3 -m codecov
+
+stages:
+  - test
+  - deploy
+
+jobs:
+  include:
+    - stage: deploy
+      python: 3.8
+      install: skip
+      script: skip
+      deploy:
+        skip_cleanup: true
+        on:
+          branch: master
+          tags: true
+        provider: pypi
+        username: __token__
+        password:
+          secure: "PceYhHjPA7IX0D5aVfjPw8crWF5xd3Jmw5HVKbEZRCTvMI0cK7aSAQI9gpmgSriToRGa2EWi1AqVicB71fYYX4aa4ZcYC+3jTlB6uMPguL4z/jdySWKhxINvGLiY2JXryYl4lDmtKgisggFnZzmsWHafmU1UEnC3C4sztjLLjdvgBWSPu1z8SiOLD104YXgQG2l+DdxrHas/B6mTnjLBx6Lwx3oOWRkosoT8f04/YLdUXIyNpipo2xfC8uSNxAzoZ5zUyJXP8SeQiAH1xQWInmFEeTLzD8kyBwv2tjzly/ucRKY8JoxbMVi1afrG5NwCdjRC0xzqlQCzk9qD33mlnY3RgCQbI6aVmJBe9qIy+k5e56FaBmEcpiVAMLBEzOhquhEAYc7ltYCQDwUvKeZDeKpyFdVMcWx4nbSLN/PBh3VY6FOH0UfGRclbkPB4cNx/AX6wuOFdD3GeSFxpwhKSD3Vyw1zLdwscX8349wNzAX5rwMl/NlGKrO+G2Mh/d+GZGk2G2bcrkTQPPMnZi8KZL5PnLOOtkWcaQJB56L6CbQzmQ3mAQxY9fa2OHiXYRqT/4PaLp+nnbdnTMYYRpSvjv/TeGPw6IdsVDcpPcR4NcdQ+6urBjnnsA+bM9gSOWL31kD0MxTkA9DyDOmY08wV9HwKEmnNHfl23L8GNsgCkK4w=" 
