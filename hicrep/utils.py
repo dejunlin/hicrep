@@ -13,7 +13,6 @@ import cooler
 import h5py
 import math
 import scipy.sparse as sp
-from statsmodels.distributions.empirical_distribution import ECDF
 
 def readMcool(fmcool: str, binSize: int):
     """Read from a mcool or cool file and return the Cooler object
@@ -145,23 +144,27 @@ def meanFilterSparse(a: sp.coo_matrix, h: int):
     ansNoEdge.data /= nNeighbors
     return ansNoEdge
 
-
-def vstran(a: np.ndarray):
-    """compute the empirical CDF at each ranked element
-    this is the so-called variance stabilizing xformation
-    scipy.stats.rankdata doesn't have a method to randomly break
-    the original order of tied elements, unlike the R implementation,
-    so I use numpy quicksort, which could break the ties somewhat
-    randomly
+def varVstran(a: np.ndarray):
+    """
+    Calculate the variance of variance-stabilizing transformed
+    (or `vstran()` in the original R implementation) data. The `vstran()` turns
+    the input data into ranks, whose variance is only a function of the input
+    size:
+        ```
+        var(1/n, 2/n, ..., n/n) = (1 - 1/(n^2))/12
+        ```
+    or with Bessel's correction:
+        ```
+        var(1/n, 2/n, ..., n/n, ddof=1) = (1 + 1.0/n)/12
+        ```
+    See section "Variance stabilized weights" in reference for more detail:
+    https://genome.cshlp.org/content/early/2017/10/06/gr.220640.117
 
     Args:
-        a: `np.ndarray` input array to be transformed
-
-    Returns:
-        `np.ndarray` transformed array
+        a (np.ndarray): Input data
+    Returns: `float` variance of the ranked input data with Bessel's correction
     """
-    aRank = np.argsort(a, kind='quicksort') + 1
-    return ECDF(aRank)(aRank)
+    return (1 + 1.0 / a.shape[0]) / 12.0
 
 
 def resample(m: sp.coo_matrix, size: int):
@@ -181,4 +184,3 @@ def resample(m: sp.coo_matrix, size: int):
     ans = sp.coo_matrix((sampledData, (m.row, m.col)), shape=m.shape)
     ans.eliminate_zeros()
     return ans
-

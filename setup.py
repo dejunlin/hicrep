@@ -40,7 +40,6 @@ setuptools.setup(
         "cooler",
         "pandas",
         "h5py",
-        "statsmodels"
     ],
     entry_points={"console_scripts": ["hicrep=hicrep:main"]},
 )
