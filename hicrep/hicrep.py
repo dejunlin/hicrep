@@ -81,6 +81,12 @@ def hicrepSCC(cool1: cooler.api.Cooler, cool2: cooler.api.Cooler,
     assert (cool1.chroms()[:] == cool2.chroms()[:]).all()[0],\
         f"Input file have different chromosome names"
     binSize = binSize1
+    bins1 = cool1.bins()
+    bins2 = cool2.bins()
+    if binSize is None:
+        # sometimes bin size can be None, e.g., input cool file has
+        # non-uniform size bins. In that case, use the median bin size
+        binSize = int(np.median((bins1[:]["end"] - bins1[:]["start"]).values))
     if dBPMax == -1:
         # In general, don't use the entire contact matrix because usually the last
         # few diagonals have very few valid data in it for computing Pearson's correlation
@@ -93,8 +99,6 @@ def hicrepSCC(cool1: cooler.api.Cooler, cool2: cooler.api.Cooler,
     assert dMax > 1, f"Input dBPmax is smaller than binSize"
     p1 = cool2pixels(cool1)
     p2 = cool2pixels(cool2)
-    bins1 = cool1.bins()
-    bins2 = cool2.bins()
     # get the total number of contacts as normalizing constant
     n1 = p1[:]['count'].sum()
     n2 = p2[:]['count'].sum()
