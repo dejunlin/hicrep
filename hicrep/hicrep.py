@@ -85,8 +85,17 @@ def hicrepSCC(cool1: cooler.api.Cooler, cool2: cooler.api.Cooler,
     bins2 = cool2.bins()
     if binSize is None:
         # sometimes bin size can be None, e.g., input cool file has
-        # non-uniform size bins. In that case, use the median bin size
+        # non-uniform size bins. 
+        assert np.all(bins1[:] == bins2[:]),\
+            f"Input cooler files don't have a unique bin size most likely "\
+            f"because non-uniform bin size was used and the bins are defined "\
+            f"differently for the two input cooler files"
+        # In that case, use the median bin size
         binSize = int(np.median((bins1[:]["end"] - bins1[:]["start"]).values))
+        warnings.warn(f"Input cooler files don't have a unique bin size most "\
+                      f"likely because non-uniform bin size was used. HicRep "\
+                      f"will use median bin size from the first cooler file "\
+                      f"to determine maximal diagonal index to include", RuntimeWarning)
     if dBPMax == -1:
         # In general, don't use the entire contact matrix because usually the last
         # few diagonals have very few valid data in it for computing Pearson's correlation
