@@ -1,7 +1,7 @@
 # hicrep
 
 [![Build Status](https://travis-ci.org/dejunlin/hicrep.svg?branch=master)](https://travis-ci.org/dejunlin/hicrep)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![PyPI version](https://badge.fury.io/py/hicrep.svg)](https://badge.fury.io/py/hicrep)
 
 Python implementation of the HiCRep: a stratum-adjusted correlation coefficient (SCC) for Hi-C data with support for Cooler sparse contact matrices

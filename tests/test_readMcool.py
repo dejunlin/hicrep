@@ -1,7 +1,13 @@
 #! /usr/bin/env python3
+# -*- coding: utf-8 -*-
+# vim:fenc=utf-8
 #
-# Testing for the helper function readMcool in hicrep/utils
+# Copyright 2020 dejunlin <dejun.lin@gmail.com>
+# Created at 2020-02-12 17:37 on dejunlin@threonine.gs.washington.edu
+# Usage: testHiCRepSCC.py
+# Description: Test HiCRep using public data
 #
+# Distributed under terms of the GNU General Public License v3.0.
 import pytest
 from hicrep.utils import readMcool
 

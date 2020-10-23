@@ -6,7 +6,7 @@
 # Usage: utils.py
 # Description: Utility functions
 #
-# Distributed under terms of the MIT license.
+# Distributed under terms of the GNU General Public License v3.0.
 import numpy as np
 import pandas as pd
 import cooler

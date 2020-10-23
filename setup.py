@@ -13,22 +13,22 @@
 # the input matrices; 3) compute the SCC score. It doesn't have the
 # procedure to bootstrap the window-size parameter
 #
-# Distributed under terms of the MIT license.
+# Distributed under terms of the GNU General Public License v3.0.
 import setuptools
 
 setuptools.setup(
     name="hicrep",
-    python_requires='>=3.7.6',
-    version="0.1.7",
+    python_requires=">=3.7.6",
+    version="0.1.8",
     description="Python implementation of HiCRep stratum-adjusted correlation coefficient of Hi-C data with sparse contact matrix support",
     long_description="see https://github.com/dejunlin/hicrep",
     long_description_content_type="text/markdown",
     url="https://github.com/dejunlin/hicrep.git",
     author="Dejun Lin",
     author_email="dejun.lin@gmail.com",
-    license="MIT",
+    license="GPLv3",
     classifiers=[
-        "License :: OSI Approved :: MIT License",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
     ],
@@ -42,5 +42,6 @@ setuptools.setup(
         "h5py",
     ],
     entry_points={"console_scripts": ["hicrep=hicrep:main"]},
+    data_files = [("", ["LICENSE.txt"])]
 )
 

@@ -7,7 +7,7 @@
 # Usage: testHiCRepSCC.py
 # Description: Test HiCRep using public data
 #
-# Distributed under terms of the MIT license.
+# Distributed under terms of the GNU General Public License v3.0.
 import numpy as np
 from hicrep.utils import (
     readMcool, cool2pixels, getSubCoo,

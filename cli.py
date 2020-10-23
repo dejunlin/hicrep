@@ -12,7 +12,7 @@
 # the input matrices; 3) compute the SCC score. It doesn't have the
 # procedure to bootstrap the window-size parameter
 #
-# Distributed under terms of the MIT license.
+# Distributed under terms of the GNU General Public License v3.0.
 from hicrep import main
 
 if __name__ == '__main__':
