@@ -109,8 +109,8 @@ def hicrepSCC(cool1: cooler.api.Cooler, cool2: cooler.api.Cooler,
     p1 = cool2pixels(cool1)
     p2 = cool2pixels(cool2)
     # get the total number of contacts as normalizing constant
-    n1 = p1[:]['count'].sum()
-    n2 = p2[:]['count'].sum()
+    n1 = cool1.info['sum']
+    n2 = cool2.info['sum']
     chrNames = cool1.chroms()[:]['name'].to_numpy()
     # filter out mitochondria chromosome
     chrNames = np.array([name for name in chrNames if name != 'M'])
@@ -135,6 +135,8 @@ def hicrepSCC(cool1: cooler.api.Cooler, cool2: cooler.api.Cooler,
         # to save computation time
         m1 = trimDiags(mS1, nDiags, False)
         m2 = trimDiags(mS2, nDiags, False)
+        del mS1
+        del mS2
         if bDownSample:
             # do downsampling
             size1 = m1.sum()
