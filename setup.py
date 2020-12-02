@@ -19,7 +19,7 @@ import setuptools
 setuptools.setup(
     name="hicrep",
     python_requires=">=3.7.6",
-    version="0.1.9",
+    version="0.2.0",
     description="Python implementation of HiCRep stratum-adjusted correlation coefficient of Hi-C data with sparse contact matrix support",
     long_description="see https://github.com/dejunlin/hicrep",
     long_description_content_type="text/markdown",
@@ -35,6 +35,7 @@ setuptools.setup(
     packages=["hicrep"],
     include_package_data=True,
     install_requires=[
+        "Deprecated",
         "numpy",
         "scipy",
         "cooler",

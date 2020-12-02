@@ -7,6 +7,8 @@
 # Description: Utility functions
 #
 # Distributed under terms of the GNU General Public License v3.0.
+from typing import Union
+from contextlib import suppress
 import numpy as np
 import pandas as pd
 import cooler
@@ -105,6 +107,27 @@ def trimDiags(a: sp.coo_matrix, iDiagMax: int, bKeepMain: bool):
     return sp.coo_matrix((a.data[idx], (a.row[idx], a.col[idx])),
                          shape=a.shape, dtype=a.dtype)
 
+def upperDiagCsr(m: sp.coo_matrix, nDiags: int):
+    """Convert an input sp.coo_matrix into a sp.csr_matrix where each row in the
+    the output corresponds to one diagonal of the upper triangle of the input.
+
+    Args:
+        m (sp.coo_matrix): input matrix
+        nDiags (int): output diagonals with index in the range [1, nDiags)
+        as rows of the output matrix
+    Returns: `sp.csr_matrix` whose rows are the diagonals of the input
+    """
+    row = m.col - m.row
+    idx = np.where((row > 0) & (row < nDiags))
+    idxRowp1 = row[idx]
+    # the diagonal index becomes the row index
+    idxRow = idxRowp1 - 1
+    # offset in the original diagonal becomes the column index
+    idxCol = m.col[idx] - idxRowp1
+    ans = sp.csr_matrix((m.data[idx], (idxRow, idxCol)),
+                        shape=(nDiags - 1, m.shape[1]), dtype=m.dtype)
+    ans.eliminate_zeros()
+    return ans
 
 def meanFilterSparse(a: sp.coo_matrix, h: int):
     """Apply a mean filter to an input sparse matrix. This convolves
@@ -144,7 +167,7 @@ def meanFilterSparse(a: sp.coo_matrix, h: int):
     ansNoEdge.data /= nNeighbors
     return ansNoEdge
 
-def varVstran(a: np.ndarray):
+def varVstran(n: Union[int, np.ndarray]):
     """
     Calculate the variance of variance-stabilizing transformed
     (or `vstran()` in the original R implementation) data. The `vstran()` turns
@@ -161,10 +184,12 @@ def varVstran(a: np.ndarray):
     https://genome.cshlp.org/content/early/2017/10/06/gr.220640.117
 
     Args:
-        a (np.ndarray): Input data
-    Returns: `float` variance of the ranked input data with Bessel's correction
+        n (Union(int, np.ndarray)): size of the input data
+    Returns: `Union(int, np.ndarray)` variance of the ranked input data with Bessel's
+    correction
     """
-    return (1 + 1.0 / a.shape[0]) / 12.0
+    with suppress(ZeroDivisionError), np.errstate(divide='ignore', invalid='ignore'):
+        return np.where(n < 2, np.nan, (1 + 1.0 / n) / 12.0)
 
 
 def resample(m: sp.coo_matrix, size: int):

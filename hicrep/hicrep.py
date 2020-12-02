@@ -14,7 +14,9 @@
 #
 # Distributed under terms of the GNU General Public License v3.0.
 import os
+from deprecated import deprecated
 import numpy as np
+import scipy.sparse as sp
 import math
 import sys
 import warnings
@@ -22,10 +24,10 @@ import cooler
 from hicrep.utils import (
     readMcool, cool2pixels, getSubCoo,
     trimDiags, meanFilterSparse, varVstran,
-    resample
+    resample, upperDiagCsr
     )
 
-
+@deprecated("Use sccByDiag instead")
 def sccOfDiag(diag1: np.ndarray, diag2: np.ndarray):
     """Get the correlation coefficient and weight of two input
     diagonal arrays
@@ -45,12 +47,43 @@ def sccOfDiag(diag1: np.ndarray, diag2: np.ndarray):
     iDiagNZ1 = diag1[idxNZ]
     iDiagNZ2 = diag2[idxNZ]
     rho = np.corrcoef(iDiagNZ1, iDiagNZ2)[0, 1]
-    iDiagVarVstran1 = varVstran(iDiagNZ1)
-    iDiagVarVstran2 = varVstran(iDiagNZ2)
+    iDiagVarVstran1 = varVstran(iDiagNZ1.size)
+    iDiagVarVstran2 = varVstran(iDiagNZ2.size)
     ws = iN * np.sqrt(iDiagVarVstran1 * iDiagVarVstran2)
     if math.isnan(rho) or math.isnan(ws):
         return (np.nan, np.nan)
     return (rho, ws)
+
+def sccByDiag(m1: sp.coo_matrix, m2: sp.coo_matrix, nDiags: int):
+    """Compute diagonal-wise hicrep SCC score for the two input matrices up to
+    nDiags diagonals
+
+
+    Args:
+        m1 (sp.coo_matrix): input contact matrix 1
+        m2 (sp.coo_matrix): input contact matrix 2
+        nDiags (int): compute SCC scores for diagonals whose index is in the
+        range of [1, nDiags)
+    Returns: `float` hicrep SCC scores
+    """
+    # convert each diagonal to one row of a csr_matrix in order to compute
+    # diagonal-wise correlation between m1 and m2
+    m1D = upperDiagCsr(m1, nDiags)
+    m2D = upperDiagCsr(m2, nDiags)
+    nSamplesD = (m1D + m2D).getnnz(axis=1)
+    rowSumM1D = m1D.sum(axis=1).A1
+    rowSumM2D = m2D.sum(axis=1).A1
+    # ignore zero-division warnings because the corresponding elements in the
+    # output don't contribute to the SCC scores
+    with np.errstate(divide='ignore', invalid='ignore'):
+        cov = m1D.multiply(m2D).sum(axis=1).A1 - rowSumM1D * rowSumM2D / nSamplesD
+        rhoD = cov / np.sqrt(
+            (m1D.multiply(m1D).sum(axis=1).A1 - np.square(rowSumM1D) / nSamplesD ) *
+            (m2D.multiply(m2D).sum(axis=1).A1 - np.square(rowSumM2D) / nSamplesD ))
+        wsD = nSamplesD * varVstran(nSamplesD)
+    wsNan2Zero = np.nan_to_num(wsD, copy=True)
+    rhoNan2Zero = np.nan_to_num(rhoD, copy=True)
+    return rhoNan2Zero @ wsNan2Zero / wsNan2Zero.sum()
 
 
 def hicrepSCC(cool1: cooler.api.Cooler, cool2: cooler.api.Cooler,
@@ -153,12 +186,5 @@ def hicrepSCC(cool1: cooler.api.Cooler, cool2: cooler.api.Cooler,
             # apply smoothing
             m1 = meanFilterSparse(m1, h)
             m2 = meanFilterSparse(m2, h)
-        # ignore the main diagonal iD == 0
-        for iD in range(1, nDiags):
-            iDiag1 = m1.diagonal(iD)
-            iDiag2 = m2.diagonal(iD)
-            rho[iD], ws[iD] = sccOfDiag(iDiag1, iDiag2)
-        wsNan2Zero = np.nan_to_num(ws, copy=True)
-        rhoNan2Zero = np.nan_to_num(rho, copy=True)
-        scc[iChr] = rhoNan2Zero @ wsNan2Zero / wsNan2Zero.sum()
+        scc[iChr] = sccByDiag(m1, m2, nDiags)
     return scc
