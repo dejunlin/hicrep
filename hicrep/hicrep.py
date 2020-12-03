@@ -130,10 +130,6 @@ def hicrepSCC(cool1: cooler.api.Cooler, cool2: cooler.api.Cooler,
                       f"will use median bin size from the first cooler file "\
                       f"to determine maximal diagonal index to include", RuntimeWarning)
     if dBPMax == -1:
-        # In general, don't use the entire contact matrix because usually the last
-        # few diagonals have very few valid data in it for computing Pearson's correlation
-        warnings.warn(f"Using dBPMax == -1 risk numerical instability at farthest "\
-                      f"diagonals for computing Pearon's correlation", RuntimeWarning)
         # this is the exclusive upper bound
         dMax = cool1.info['nbins']
     else:
