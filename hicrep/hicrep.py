@@ -78,8 +78,8 @@ def sccByDiag(m1: sp.coo_matrix, m2: sp.coo_matrix, nDiags: int):
     with np.errstate(divide='ignore', invalid='ignore'):
         cov = m1D.multiply(m2D).sum(axis=1).A1 - rowSumM1D * rowSumM2D / nSamplesD
         rhoD = cov / np.sqrt(
-            (m1D.multiply(m1D).sum(axis=1).A1 - np.square(rowSumM1D) / nSamplesD ) *
-            (m2D.multiply(m2D).sum(axis=1).A1 - np.square(rowSumM2D) / nSamplesD ))
+            (m1D.power(2).sum(axis=1).A1 - np.square(rowSumM1D) / nSamplesD ) *
+            (m2D.power(2).sum(axis=1).A1 - np.square(rowSumM2D) / nSamplesD ))
         wsD = nSamplesD * varVstran(nSamplesD)
     wsNan2Zero = np.nan_to_num(wsD, copy=True)
     rhoNan2Zero = np.nan_to_num(rhoD, copy=True)
