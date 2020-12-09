@@ -31,13 +31,14 @@ def main(*args):
                         help="Use this to select the bin size from the input mcool\
                         file. Default to -1, meaning that the inputs are treated as\
                         single-binsize .cool files")
-    parser.add_argument("--h", type=int, default=0,
+    parser.add_argument("--h", type=int, required=True,
                         help="Smooth the input contact matrices using a 2d mean\
-                        filter with window size of 1 + 2 * value")
-    parser.add_argument("--dBPMax", type=int, default=-1,
+                        filter with window size of 1 + 2 * value. This should\
+                        be set according to the bin size.")
+    parser.add_argument("--dBPMax", type=int, required=True,
                         help="Only consider contacts at most this number of bp away\
-                        from the diagonal. Default to -1, meaning the entire\
-                        contact matrix is used")
+                        from the diagonal. For human genome, the value of\
+                        5000000 was used in the original HiCRep paper.")
     parser.add_argument("--bDownSample", action='store_true', default=False,
                         help="Down sample the input with more contact counts to\
                         the the same number of counts as the other input with less\
