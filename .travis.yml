@@ -1,7 +1,15 @@
 language: python
-python:
+
+env:
+  - SCIPY_VERSION=1.5.4 NUMPY_VERSION=1.19.4
+  - SCIPY_VERSION=1.5 NUMPY_VERSION=1.19
+  - SCIPY_VERSION=1.5 NUMPY_VERSION=1.18
+  - SCIPY_VERSION=1.4 NUMPY_VERSION=1.18
+  
+python: 
   - 3.7.6
   - 3.8
+
 before_install:
   - python3 --version
   - pip3 install -U pip
@@ -9,7 +17,7 @@ before_install:
   - pip3 install -U pytest-cov
   - pip3 install -U codecov
 install:
-  - pip3 install .
+  - pip3 install -q SciPy==$SCIPY_VERSION numpy==$NUMPY_VERSION .
 script: python3 -m pytest
 after_success:
   - python 3 -m codecov
@@ -20,6 +28,10 @@ stages:
 
 jobs:
   include:
+    - python: 3.9
+      env: SCIPY_VERSION=1.5.4 NUMPY_VERSION=1.19.4
+    - python: 3.7.6 
+      env: SCIPY_VERSION=1.3.0 NUMPY_VERSION=1.17.0
     - stage: deploy
       python: 3.8
       install: skip
