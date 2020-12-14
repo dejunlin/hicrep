@@ -81,8 +81,13 @@ def sccByDiag(m1: sp.coo_matrix, m2: sp.coo_matrix, nDiags: int):
             (m1D.power(2).sum(axis=1).A1 - np.square(rowSumM1D) / nSamplesD ) *
             (m2D.power(2).sum(axis=1).A1 - np.square(rowSumM2D) / nSamplesD ))
         wsD = nSamplesD * varVstran(nSamplesD)
-    wsNan2Zero = np.nan_to_num(wsD, copy=True)
-    rhoNan2Zero = np.nan_to_num(rhoD, copy=True)
+        # Convert NaN and Inf resulting from div by 0 to zeros.
+        # posinf and neginf added to fix behavior seen in 4DN datasets
+        # 4DNFIOQLTI9G and DNFIH7MQHOR at 5kb where inf would be reported
+        # as an SCC score
+        wsNan2Zero = np.nan_to_num(wsD, copy=True, posinf=0.0, neginf=0.0)
+        rhoNan2Zero = np.nan_to_num(rhoD, copy=True, posinf=0.0, neginf=0.0)
+
     return rhoNan2Zero @ wsNan2Zero / wsNan2Zero.sum()
 
 
@@ -118,7 +123,7 @@ def hicrepSCC(cool1: cooler.api.Cooler, cool2: cooler.api.Cooler,
     bins2 = cool2.bins()
     if binSize is None:
         # sometimes bin size can be None, e.g., input cool file has
-        # non-uniform size bins. 
+        # non-uniform size bins.
         assert np.all(bins1[:] == bins2[:]),\
             f"Input cooler files don't have a unique bin size most likely "\
             f"because non-uniform bin size was used and the bins are defined "\
