@@ -36,7 +36,7 @@ setuptools.setup(
     include_package_data=True,
     install_requires=[
         "Deprecated",
-        "numpy",
+        "numpy>=1.17.0",
         "scipy",
         "cooler",
         "pandas",
@@ -45,4 +45,3 @@ setuptools.setup(
     entry_points={"console_scripts": ["hicrep=hicrep:main"]},
     data_files = [("", ["LICENSE.txt"])]
 )
-
