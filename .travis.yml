@@ -1,7 +1,15 @@
 language: python
+
+env:
+  - SCIPY_VERSION=1.5.4 NUMPY_VERSION=1.19.4
+  - SCIPY_VERSION=1.5 NUMPY_VERSION=1.19
+  - SCIPY_VERSION=1.5 NUMPY_VERSION=1.18
+  - SCIPY_VERSION=1.4 NUMPY_VERSION=1.18
+
 python:
   - 3.7.6
   - 3.8
+
 before_install:
   - python3 --version
   - pip3 install -U pip
@@ -9,7 +17,7 @@ before_install:
   - pip3 install -U pytest-cov
   - pip3 install -U codecov
 install:
-  - pip3 install .
+  - pip3 install -q SciPy==$SCIPY_VERSION numpy==$NUMPY_VERSION .
 script: python3 -m pytest
 after_success:
   - python 3 -m codecov
@@ -20,6 +28,10 @@ stages:
 
 jobs:
   include:
+    - python: 3.9
+      env: SCIPY_VERSION=1.5.4 NUMPY_VERSION=1.19.4
+    - python: 3.7.6
+      env: SCIPY_VERSION=1.3.0 NUMPY_VERSION=1.17.0
     - stage: deploy
       python: 3.8
       install: skip
@@ -32,4 +44,4 @@ jobs:
         provider: pypi
         username: __token__
         password:
-          secure: "PceYhHjPA7IX0D5aVfjPw8crWF5xd3Jmw5HVKbEZRCTvMI0cK7aSAQI9gpmgSriToRGa2EWi1AqVicB71fYYX4aa4ZcYC+3jTlB6uMPguL4z/jdySWKhxINvGLiY2JXryYl4lDmtKgisggFnZzmsWHafmU1UEnC3C4sztjLLjdvgBWSPu1z8SiOLD104YXgQG2l+DdxrHas/B6mTnjLBx6Lwx3oOWRkosoT8f04/YLdUXIyNpipo2xfC8uSNxAzoZ5zUyJXP8SeQiAH1xQWInmFEeTLzD8kyBwv2tjzly/ucRKY8JoxbMVi1afrG5NwCdjRC0xzqlQCzk9qD33mlnY3RgCQbI6aVmJBe9qIy+k5e56FaBmEcpiVAMLBEzOhquhEAYc7ltYCQDwUvKeZDeKpyFdVMcWx4nbSLN/PBh3VY6FOH0UfGRclbkPB4cNx/AX6wuOFdD3GeSFxpwhKSD3Vyw1zLdwscX8349wNzAX5rwMl/NlGKrO+G2Mh/d+GZGk2G2bcrkTQPPMnZi8KZL5PnLOOtkWcaQJB56L6CbQzmQ3mAQxY9fa2OHiXYRqT/4PaLp+nnbdnTMYYRpSvjv/TeGPw6IdsVDcpPcR4NcdQ+6urBjnnsA+bM9gSOWL31kD0MxTkA9DyDOmY08wV9HwKEmnNHfl23L8GNsgCkK4w=" 
+          secure: "PceYhHjPA7IX0D5aVfjPw8crWF5xd3Jmw5HVKbEZRCTvMI0cK7aSAQI9gpmgSriToRGa2EWi1AqVicB71fYYX4aa4ZcYC+3jTlB6uMPguL4z/jdySWKhxINvGLiY2JXryYl4lDmtKgisggFnZzmsWHafmU1UEnC3C4sztjLLjdvgBWSPu1z8SiOLD104YXgQG2l+DdxrHas/B6mTnjLBx6Lwx3oOWRkosoT8f04/YLdUXIyNpipo2xfC8uSNxAzoZ5zUyJXP8SeQiAH1xQWInmFEeTLzD8kyBwv2tjzly/ucRKY8JoxbMVi1afrG5NwCdjRC0xzqlQCzk9qD33mlnY3RgCQbI6aVmJBe9qIy+k5e56FaBmEcpiVAMLBEzOhquhEAYc7ltYCQDwUvKeZDeKpyFdVMcWx4nbSLN/PBh3VY6FOH0UfGRclbkPB4cNx/AX6wuOFdD3GeSFxpwhKSD3Vyw1zLdwscX8349wNzAX5rwMl/NlGKrO+G2Mh/d+GZGk2G2bcrkTQPPMnZi8KZL5PnLOOtkWcaQJB56L6CbQzmQ3mAQxY9fa2OHiXYRqT/4PaLp+nnbdnTMYYRpSvjv/TeGPw6IdsVDcpPcR4NcdQ+6urBjnnsA+bM9gSOWL31kD0MxTkA9DyDOmY08wV9HwKEmnNHfl23L8GNsgCkK4w="
