@@ -34,7 +34,11 @@ def main(*args):
     parser.add_argument("--h", type=int, required=True,
                         help="Smooth the input contact matrices using a 2d mean\
                         filter with window size of 1 + 2 * value. This should\
-                        be set according to the bin size.")
+                        be set according to the bin size. For example, you can try the\
+                        following settings: --binSize=10000 --h=20,\
+                        --binSize=25000 --h=10, --binSize=40000 --h5. Beware that\
+                        these examples might not work in all cases and the user\
+                        should adjust them according to the specific application")
     parser.add_argument("--dBPMax", type=int, required=True,
                         help="Only consider contacts at most this number of bp away\
                         from the diagonal. For human genome, the value of\
