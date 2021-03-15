@@ -24,7 +24,7 @@ import cooler
 from hicrep.utils import (
     readMcool, cool2pixels, getSubCoo,
     trimDiags, meanFilterSparse, varVstran,
-    resample, upperDiagCsr
+    resample, upperDiagCsr, coolerInfo
     )
 
 @deprecated("Use sccByDiag instead")
@@ -108,13 +108,13 @@ def hicrepSCC(cool1: cooler.api.Cooler, cool2: cooler.api.Cooler,
     Returns:
         `float` scc scores for each chromosome
     """
-    binSize1 = cool1.info['bin-size']
-    binSize2 = cool2.info['bin-size']
+    binSize1 = cool1.binsize
+    binSize2 = cool2.binsize
     assert binSize1 == binSize2,\
         f"Input cool files have different bin sizes"
-    assert cool1.info['nbins'] == cool2.info['nbins'],\
+    assert coolerInfo(cool1, 'nbins') == coolerInfo(cool2, 'nbins'),\
         f"Input cool files have different number of bins"
-    assert cool1.info['nchroms'] == cool2.info['nchroms'],\
+    assert coolerInfo(cool1, 'nchroms') == coolerInfo(cool2, 'nchroms'),\
         f"Input cool files have different number of chromosomes"
     assert (cool1.chroms()[:] == cool2.chroms()[:]).all()[0],\
         f"Input file have different chromosome names"
@@ -136,15 +136,15 @@ def hicrepSCC(cool1: cooler.api.Cooler, cool2: cooler.api.Cooler,
                       f"to determine maximal diagonal index to include", RuntimeWarning)
     if dBPMax == -1:
         # this is the exclusive upper bound
-        dMax = cool1.info['nbins']
+        dMax = coolerInfo(cool1, 'nbins')
     else:
         dMax = dBPMax // binSize + 1
     assert dMax > 1, f"Input dBPmax is smaller than binSize"
     p1 = cool2pixels(cool1)
     p2 = cool2pixels(cool2)
     # get the total number of contacts as normalizing constant
-    n1 = cool1.info['sum']
-    n2 = cool2.info['sum']
+    n1 = coolerInfo(cool1, 'sum')
+    n2 = coolerInfo(cool2, 'sum')
     chrNames = cool1.chroms()[:]['name'].to_numpy()
     # filter out mitochondria chromosome
     chrNames = np.array([name for name in chrNames if name != 'M'])

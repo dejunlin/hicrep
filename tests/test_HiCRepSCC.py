@@ -12,7 +12,7 @@ import numpy as np
 from hicrep.utils import (
     readMcool, cool2pixels, getSubCoo,
     trimDiags, meanFilterSparse,
-    resample
+    resample, coolerInfo
     )
 from hicrep.hicrep import (
     sccOfDiag, hicrepSCC
@@ -54,11 +54,11 @@ def testFlyHiC():
     bDownSample = False
     cool1, binSize1 = readMcool(fmcool1, binSize)
     cool2, binSize2 = readMcool(fmcool2, binSize)
-    assert cool1.info['nbins'] == cool2.info['nbins'],\
+    assert coolerInfo(cool1, 'nbins') == coolerInfo(cool2, 'nbins'),\
         f"Input cool files {fmcool1} and {fmcool2} have different number of bins"
     assert binSize1 == binSize2,\
         f"Input cool files {fmcool1} and {fmcool2} have different bin sizes"
-    assert cool1.info['nchroms'] == cool2.info['nchroms'],\
+    assert coolerInfo(cool1, 'nchroms') == coolerInfo(cool2, 'nchroms'),\
         f"Input cool files {fmcool1} and {fmcool2} have different number of chromosomes"
     assert (cool1.chroms()[:] == cool2.chroms()[:]).all()[0],\
         f"Input file {fmcool1} and {fmcool2} have different chromosome names"

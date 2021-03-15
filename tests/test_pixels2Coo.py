@@ -10,7 +10,8 @@
 # Distributed under terms of the GNU General Public License v3.0.
 import pytest
 from hicrep.utils import (
-    readMcool, cool2pixels, pixels2Coo, getSubCoo
+    readMcool, cool2pixels, pixels2Coo, getSubCoo,
+    coolerInfo
     )
 
 def testPixels2Coo():
@@ -24,11 +25,11 @@ def testPixels2Coo():
 
     # Check that the shape of the sparse matrix is n * n where n is the number
     # of bins in the original cooler (at the specified resolution)
-    assert mSparse.shape == (cool.info['nbins'], cool.info['nbins']),\
+    assert mSparse.shape == (coolerInfo(cool, 'nbins'), coolerInfo(cool, 'nbins')),\
         f"pixels2coo() returns a matrix of different dhape than the original cooler"
 
     # Check that the number of data points in the sparse matrix gotten from
     # pixels2coo is equal to #the number specified in the original cooler file
-    assert mSparse.nnz == cool.info['nnz'],\
+    assert mSparse.nnz == coolerInfo(cool, 'nnz'),\
         f"pixels2coo() returns a matrix with a different number of "\
         f"nonzero entries then specified in the original cooler"

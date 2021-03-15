@@ -209,3 +209,33 @@ def resample(m: sp.coo_matrix, size: int):
     ans = sp.coo_matrix((sampledData, (m.row, m.col)), shape=m.shape)
     ans.eliminate_zeros()
     return ans
+
+
+def coolerInfo(cool: cooler.api.Cooler, k: str):
+    """Retrieve metadata from Cooler file
+
+    The required metadata fields are documented in:
+    https://cooler.readthedocs.io/en/latest/schema.html#metadata
+
+    This function will attempt to return the requested field via the input key
+    `k` directly from the Cooler `cool` object or if that doesn't work, will try
+    to compute it from the contact matrix for certain types of metadata
+
+
+    Args:
+        cool (cooler.api.Cooler): Input Cooler object
+        k (str): Key of the metadata field
+    Returns: Requested metadata
+    """
+    if k in cool.info:
+        return cool.info[k]
+    elif k == 'sum':
+        return cool.pixels()['count'][:].sum()
+    elif k == 'nbins':
+        return cool.bins().shape[0]
+    elif k == 'nnz':
+        return cool.pixels().shape[0]
+    elif k == 'nchroms':
+        return cool.chroms().shape[0]
+    else:
+        raise KeyError(f'Unable to retrieve metadata field \'{k}\'')
