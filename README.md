@@ -7,11 +7,11 @@
 
 Python implementation of the HiCRep: a stratum-adjusted correlation coefficient (SCC) for Hi-C data with support for Cooler sparse contact matrices
 
-The algorithm is published in 
+The algorithm is published in:
 
 HiCRep: assessing the reproducibility of Hi-C data using a stratum-adjusted correlation coefficient. Tao Yang Feipeng Zhang Galip Gürkan Yardımcı Fan Song Ross C. Hardison William Stafford Noble Feng Yue and Qunhua Li, Genome Res. 2017 Nov;27(11):1939-1949. doi: 10.1101/gr.220640.117. 
 
-This implementation takes a pair of Hi-C data sets in Cooler format (.cool for single binsize or .mcool multiple binsizes) and compute the HiCRep SCC scores for each pair of chromosomes between the two data sets.
+This implementation takes a pair of Hi-C data sets in Cooler format (.cool for single binsize or .mcool multiple binsizes) and computes the HiCRep SCC scores for each pair of chromosomes between the two data sets. A guide for how to convert a file of read-pairs into the appropriate .cool or .mcool format is available in the Cooler documentation [here](https://cooler.readthedocs.io/en/latest/cli.html#cooler-cload-pairs). 
 
 The HiCRep SCC computed from this implementaion is consistent with the original R implementaion (https://github.com/MonkeyLB/hicrep/) and it's more than 10x faster than the R version:
 
@@ -83,11 +83,11 @@ then run
 ```
 hicrep mydata1.mcool mydata2.mcool outputSCC.txt --binSize 100000 --h 1 --dBPMax 500000 
 ```
-or 
+when passing in an `.mcool` file with multiple binsizes or 
 ```
 hicrep mydata1.cool mydata2.cool outputSCC.txt --h 1 --dBPMax 500000 
 ```
-The output `outputSCC.txt` has a list of SCC scores for each chromosome in the input. To see the list of command line options:
+when passing in a `.cool` file with a single bultin binsize. The output `outputSCC.txt` has a list of SCC scores for each chromosome in the input. To see the list of command line options:
 ```
 hicrep -h
 ```
