@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 **Describe the bug**
-A clear and concise description of what the bug is.
+A clear and concise description of what the bug is and include the details of any warnings or error messages.
 
 **To Reproduce**
 Steps to reproduce the behavior, including the full set of commands or the sequence of library function call that lead to the behavior :
