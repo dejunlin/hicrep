@@ -92,7 +92,8 @@ def sccByDiag(m1: sp.coo_matrix, m2: sp.coo_matrix, nDiags: int):
 
 
 def hicrepSCC(cool1: cooler.api.Cooler, cool2: cooler.api.Cooler,
-              h: int, dBPMax: int, bDownSample: bool):
+              h: int, dBPMax: int, bDownSample: bool,
+              chrNames: np.ndarray = np.array([], dtype=str)):
     """Compute hicrep score between two input Cooler contact matrices
 
     Args:
@@ -104,6 +105,9 @@ def hicrepSCC(cool1: cooler.api.Cooler, cool2: cooler.api.Cooler,
         distance (bp) away
         bDownSample: `bool` Down sample the input with more contacts
         to the same number of contacts as in the other input
+        chrNames: `np.ndarray` Numpy array of chromosome names whose SCC to
+        compute. Default to empty array, which means all chromosomes in the
+        genome are used to compute SCC
 
     Returns:
         `float` scc scores for each chromosome
@@ -145,7 +149,8 @@ def hicrepSCC(cool1: cooler.api.Cooler, cool2: cooler.api.Cooler,
     # get the total number of contacts as normalizing constant
     n1 = coolerInfo(cool1, 'sum')
     n2 = coolerInfo(cool2, 'sum')
-    chrNames = cool1.chroms()[:]['name'].to_numpy()
+    if chrNames.size == 0:
+        chrNames = cool1.chroms()[:]['name'].to_numpy()
     # filter out mitochondria chromosome
     chrNames = np.array([name for name in chrNames if name != 'M'])
     scc = np.full(chrNames.shape[0], -2.0)

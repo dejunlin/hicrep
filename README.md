@@ -73,6 +73,9 @@ bDownSample = False
 # this will result in a SCC score for each chromosome available in the data set
 scc = hicrepSCC(cool1, cool2, h, dBPMax, bDownSample)
 
+# Optionally you can get SCC score from a subset of chromosomes
+sccSub = hicrepSCC(cool1, cool2, h, dBPMax, bDownSample, np.array(['myChr1', 'myOtherChr'], dtype=str))
+
 ```
 
 To use as a command line tool, install this package by
@@ -90,4 +93,8 @@ hicrep mydata1.cool mydata2.cool outputSCC.txt --h 1 --dBPMax 500000
 when passing in a `.cool` file with a single bultin binsize. The output `outputSCC.txt` has a list of SCC scores for each chromosome in the input. To see the list of command line options:
 ```
 hicrep -h
+```
+You can optionally compute SCC scores for a subset of chromosomes using
+```
+hicrep mydata1.cool mydata2.cool outputSCC_Subset.txt --h 1 --dBPMax 500000 --chrNames 'myChr1' 'myOtherChr'
 ```

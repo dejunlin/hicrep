@@ -45,6 +45,20 @@ def testHumanHiC():
     assert np.isclose(results, expected).all(),\
         f"SCC scores between {fmcool1} and {fmcool2} differ from those given by the R implementation"
 
+    # Test the computation of a subset of chromosomes give the same results as
+    # the whole set
+    chrNames = np.array(['chr1', 'chr2', 'chrX'], dtype=str)
+    resultsSub = hicrepSCC(cool1, cool2, h, dBPMax, bDownSample, chrNames)
+    chrNamesAll = cool1.chroms()[:]['name'].to_numpy()
+    chrNamesAll = np.array([name for name in chrNamesAll if name != 'M'])
+    iChrs = np.where(np.isin(chrNamesAll, chrNames))[0]
+    assert (results[iChrs] == resultsSub).all(), f"""
+        SCC scores between {fmcool1} and {fmcool2} on chromosome subset
+        {chrNames} differ from those computed from the whole set. The whole
+        genome results are: {results} and the subset indices are {iChrs}.
+        """
+
+
 def testFlyHiC():
     fmcool1 = "tests/data/fly_hi-c/4DNFI8DRD739_bin100kb.cool"
     fmcool2 = "tests/data/fly_hi-c/4DNFIZ1ZVXC8_bin100kb.cool"
@@ -68,3 +82,16 @@ def testFlyHiC():
                          9.933660605077106e-01, 9.927681695925705e-01,
                          6.238132870270471e-01])
     assert np.isclose(results, expected).all()
+
+    # Test the computation of a subset of chromosomes give the same results as
+    # the whole set
+    chrNames = np.array(['chr2L', 'chr2R', 'chrX'], dtype=str)
+    resultsSub = hicrepSCC(cool1, cool2, h, dBPMax, bDownSample, chrNames)
+    chrNamesAll = cool1.chroms()[:]['name'].to_numpy()
+    chrNamesAll = np.array([name for name in chrNamesAll if name != 'M'])
+    iChrs = np.where(np.isin(chrNamesAll, chrNames))[0]
+    assert (results[iChrs] == resultsSub).all(), f"""
+        SCC scores between {fmcool1} and {fmcool2} on chromosome subset
+        {chrNames} differ from those computed from the whole set. The whole
+        genome results are: {results} and the subset indices are {iChrs}.
+        """

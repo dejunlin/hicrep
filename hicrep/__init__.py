@@ -49,6 +49,9 @@ def main(*args):
                         contact counts. If turned off, the input matrices will be\
                         normalized by dividing the counts by their respective total\
                         number of contacts.")
+    parser.add_argument("--chrNames", type=str, nargs='*', default=[],
+                        help="Only compute the SCC scores on this subset of\
+                        chromosomes whose names are provided")
 
     args = parser.parse_args()
 
@@ -76,10 +79,11 @@ def main(*args):
     h = args.h
     dBPMax = args.dBPMax
     bDownSample = args.bDownSample
+    chrNames = np.array(args.chrNames, dtype=str)
 
     cool1, binSize1 = readMcool(fmcool1, binSize)
     cool2, binSize2 = readMcool(fmcool2, binSize)
 
-    scc = hicrepSCC(cool1, cool2, h, dBPMax, bDownSample)
+    scc = hicrepSCC(cool1, cool2, h, dBPMax, bDownSample, chrNames)
 
     np.savetxt(fout, scc, "%30.15e", header=header)
