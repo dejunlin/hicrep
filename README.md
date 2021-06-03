@@ -71,6 +71,7 @@ bDownSample = False
 
 # compute the SCC score
 # this will result in a SCC score for each chromosome available in the data set
+# listed in the same order as the chromosomes are listed in the input Cooler files
 scc = hicrepSCC(cool1, cool2, h, dBPMax, bDownSample)
 
 # Optionally you can get SCC score from a subset of chromosomes
@@ -90,7 +91,7 @@ when passing in an `.mcool` file with multiple binsizes or
 ```
 hicrep mydata1.cool mydata2.cool outputSCC.txt --h 1 --dBPMax 500000 
 ```
-when passing in a `.cool` file with a single bultin binsize. The output `outputSCC.txt` has a list of SCC scores for each chromosome in the input. To see the list of command line options:
+when passing in a `.cool` file with a single bultin binsize. The output `outputSCC.txt` has a list of SCC scores for each chromosome in the input. The output SCC scores are listed in the same order as the chromosomes are listed in the input Cooler files. To see the list of command line options:
 ```
 hicrep -h
 ```
