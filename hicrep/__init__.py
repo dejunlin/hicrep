@@ -52,6 +52,10 @@ def main(*args):
     parser.add_argument("--chrNames", type=str, nargs='*', default=[],
                         help="Only compute the SCC scores on this subset of\
                         chromosomes whose names are provided")
+    parser.add_argument("--excludeChr", type=str, nargs='*', default=[],
+                        help="Exclude chromosomes from the SCC score calculations.\
+                        Mitochondrial chromosomes named \"M\" are excluded by\
+                        default.")
 
     args = parser.parse_args()
 
@@ -80,10 +84,11 @@ def main(*args):
     dBPMax = args.dBPMax
     bDownSample = args.bDownSample
     chrNames = np.array(args.chrNames, dtype=str)
-
+    excludeChr = np.array(args.excludeChr, dtype=str)
+    
     cool1, binSize1 = readMcool(fmcool1, binSize)
     cool2, binSize2 = readMcool(fmcool2, binSize)
 
-    scc = hicrepSCC(cool1, cool2, h, dBPMax, bDownSample, chrNames)
+    scc = hicrepSCC(cool1, cool2, h, dBPMax, bDownSample, chrNames, excludeChr)
 
     np.savetxt(fout, scc, "%30.15e", header=header)
