@@ -52,13 +52,17 @@ def main(*args):
     parser.add_argument("--chrNames", type=str, nargs='*', default=[],
                         help="Only compute the SCC scores on this subset of\
                         chromosomes whose names are provided")
-    parser.add_argument("--excludeChr", type=str, nargs='*', default=[],
+    parser.add_argument("--excludeChr", type=str, nargs='*', default=['M'],
                         help="Exclude chromosomes from the SCC score calculations.\
                         Mitochondrial chromosomes named \"M\" are excluded by\
                         default.")
 
     args = parser.parse_args()
 
+    if not args.excludeChr == ['M']:
+        assert not (args.chrNames and args.excludeChr), f"""
+            Please use --chrNames OR --excludeChr arguments but not both."""
+    
     header = "#"+" ".join(sys.argv)+"\n"
 
     # Check if current script is under revision control

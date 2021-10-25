@@ -57,6 +57,18 @@ def testHumanHiC():
         {chrNames} differ from those computed from the whole set. The whole
         genome results are: {results} and the subset indices are {iChrs}.
         """
+        
+    # Test the computation when excluding chromosomes give the same results as
+    # the whole set
+    exclNames = np.array(['chr1', 'chr2', 'chrX'], dtype=str)
+    resultsExcl = hicrepSCC(cool1, cool2, h, dBPMax, bDownSample, chrNamesAll, exclNames)
+    chrExclNames = np.array([name for name in chrNamesAll if name not in exclNames])
+    ieChrs = np.where(np.isin(chrNamesAll, chrExclNames))[0]
+    assert (results[ieChrs] == resultsExcl).all(), f"""
+        SCC scores between {fmcool1} and {fmcool2} differ from those computed 
+        from the whole set when {chrExclNames} are excluded. The whole genome 
+        results are: {results} and the subset indices are {iChrs}.
+        """
 
 
 def testFlyHiC():
@@ -94,4 +106,16 @@ def testFlyHiC():
         SCC scores between {fmcool1} and {fmcool2} on chromosome subset
         {chrNames} differ from those computed from the whole set. The whole
         genome results are: {results} and the subset indices are {iChrs}.
+        """
+    
+    # Test the computation when excluding chromosomes give the same results as
+    # the whole set
+    exclNames = np.array(['chr2L', 'chr2R', 'chrX'], dtype=str)
+    resultsExcl = hicrepSCC(cool1, cool2, h, dBPMax, bDownSample, chrNamesAll, exclNames)
+    chrExclNames = np.array([name for name in chrNamesAll if name not in exclNames])
+    ieChrs = np.where(np.isin(chrNamesAll, chrExclNames))[0]
+    assert (results[ieChrs] == resultsExcl).all(), f"""
+        SCC scores between {fmcool1} and {fmcool2} differ from those computed 
+        from the whole set when {chrExclNames} are excluded. The whole genome 
+        results are: {results} and the subset indices are {iChrs}.
         """
