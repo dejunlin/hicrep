@@ -93,8 +93,7 @@ def sccByDiag(m1: sp.coo_matrix, m2: sp.coo_matrix, nDiags: int):
 
 def hicrepSCC(cool1: cooler.api.Cooler, cool2: cooler.api.Cooler,
               h: int, dBPMax: int, bDownSample: bool,
-              chrNames: np.ndarray = np.array([], dtype=str),
-              excludeChr: np.ndarray = np.array([], dtype=str)):
+              chrNames: list = None, excludeChr: set = None):
     """Compute hicrep score between two input Cooler contact matrices
 
     Args:
@@ -106,11 +105,11 @@ def hicrepSCC(cool1: cooler.api.Cooler, cool2: cooler.api.Cooler,
         distance (bp) away
         bDownSample: `bool` Down sample the input with more contacts
         to the same number of contacts as in the other input
-        chrNames: `np.ndarray` Numpy array of chromosome names whose SCC to
-        compute. Default to empty array, which means all chromosomes in the
+        chrNames: `list` List of chromosome names whose SCC to
+        compute. Default to None, which means all chromosomes in the
         genome are used to compute SCC
-        excludeChr: `np.ndarray` Numpy array of chromosome names to exclude
-        from SCC computation. Default to empty array.
+        excludeChr: `set` Set of chromosome names to exclude from SCC
+        computation. Default to None.
 
     Returns:
         `float` scc scores for each chromosome
@@ -152,13 +151,23 @@ def hicrepSCC(cool1: cooler.api.Cooler, cool2: cooler.api.Cooler,
     # get the total number of contacts as normalizing constant
     n1 = coolerInfo(cool1, 'sum')
     n2 = coolerInfo(cool2, 'sum')
-    if chrNames.size == 0:
-        chrNames = cool1.chroms()[:]['name'].to_numpy()
-    # filter out mitochondria chromosome and other excluded chromosomes
-    chrNames = np.array([name for name in chrNames if name not in excludeChr])
-    scc = np.full(chrNames.shape[0], -2.0)
-    for iChr in range(chrNames.shape[0]):
-        chrName = chrNames[iChr]
+    # Use dict here so that the chrNames don't duplicate
+    if chrNames is None:
+        chrNamesDict = dict.fromkeys(cool1.chroms()[:]['name'].tolist())
+    else:
+        chrNamesDict = dict.fromkeys(chrNames)
+    # It's important to preserve the order of the input chrNames so that the
+    # user knows the order of the output SCC scores so we bail when encounter
+    # duplicate names rather than implicit prunning the names.
+    assert chrNames is None or len(chrNamesDict) == len(chrNames), f"""
+        Found Duplicates in {chrNames}. Please remove them.
+        """
+    # filter out excluded chromosomes
+    if excludeChr is None:
+        excludeChr = set()
+    chrNames = [ chrName for chrName in chrNamesDict if chrName not in excludeChr ]
+    scc = np.full(len(chrNames), -2.0)
+    for iChr, chrName in enumerate(chrNames):
         # normalize by total number of contacts
         mS1 = getSubCoo(p1, bins1, chrName)
         assert mS1.size > 0, "Contact matrix 1 of chromosome %s is empty" % (chrName)

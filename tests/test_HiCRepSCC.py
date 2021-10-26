@@ -47,26 +47,27 @@ def testHumanHiC():
 
     # Test the computation of a subset of chromosomes give the same results as
     # the whole set
-    chrNames = np.array(['chr1', 'chr2', 'chrX'], dtype=str)
+    chrNames = ['chr1', 'chr2', 'chrX']
     resultsSub = hicrepSCC(cool1, cool2, h, dBPMax, bDownSample, chrNames)
-    chrNamesAll = cool1.chroms()[:]['name'].to_numpy()
-    chrNamesAll = np.array([name for name in chrNamesAll if name != 'M'])
+    chrNamesAll = cool1.chroms()[:]['name'].tolist()
+    chrNamesAll = [name for name in chrNamesAll if name != 'M']
     iChrs = np.where(np.isin(chrNamesAll, chrNames))[0]
     assert (results[iChrs] == resultsSub).all(), f"""
         SCC scores between {fmcool1} and {fmcool2} on chromosome subset
         {chrNames} differ from those computed from the whole set. The whole
         genome results are: {results} and the subset indices are {iChrs}.
         """
-        
+
     # Test the computation when excluding chromosomes give the same results as
     # the whole set
-    exclNames = np.array(['chr1', 'chr2', 'chrX'], dtype=str)
-    resultsExcl = hicrepSCC(cool1, cool2, h, dBPMax, bDownSample, chrNamesAll, exclNames)
-    chrExclNames = np.array([name for name in chrNamesAll if name not in exclNames])
-    ieChrs = np.where(np.isin(chrNamesAll, chrExclNames))[0]
+    exclNames = set(['chr1', 'chr2', 'chrX'])
+    resultsExcl = hicrepSCC(cool1, cool2, h, dBPMax, bDownSample,
+                            chrNamesAll, exclNames)
+    chrNamesRemain = [name for name in chrNamesAll if name not in exclNames]
+    ieChrs = np.where(np.isin(chrNamesAll, chrNamesRemain))[0]
     assert (results[ieChrs] == resultsExcl).all(), f"""
-        SCC scores between {fmcool1} and {fmcool2} differ from those computed 
-        from the whole set when {chrExclNames} are excluded. The whole genome 
+        SCC scores between {fmcool1} and {fmcool2} differ from those computed
+        from the whole set when {chrNamesRemain} are excluded. The whole genome
         results are: {results} and the subset indices are {iChrs}.
         """
 
@@ -97,25 +98,26 @@ def testFlyHiC():
 
     # Test the computation of a subset of chromosomes give the same results as
     # the whole set
-    chrNames = np.array(['chr2L', 'chr2R', 'chrX'], dtype=str)
+    chrNames = ['chr2L', 'chr2R', 'chrX']
     resultsSub = hicrepSCC(cool1, cool2, h, dBPMax, bDownSample, chrNames)
-    chrNamesAll = cool1.chroms()[:]['name'].to_numpy()
-    chrNamesAll = np.array([name for name in chrNamesAll if name != 'M'])
+    chrNamesAll = cool1.chroms()[:]['name'].tolist()
+    chrNamesAll = [name for name in chrNamesAll if name != 'M']
     iChrs = np.where(np.isin(chrNamesAll, chrNames))[0]
     assert (results[iChrs] == resultsSub).all(), f"""
         SCC scores between {fmcool1} and {fmcool2} on chromosome subset
         {chrNames} differ from those computed from the whole set. The whole
         genome results are: {results} and the subset indices are {iChrs}.
         """
-    
+
     # Test the computation when excluding chromosomes give the same results as
     # the whole set
-    exclNames = np.array(['chr2L', 'chr2R', 'chrX'], dtype=str)
-    resultsExcl = hicrepSCC(cool1, cool2, h, dBPMax, bDownSample, chrNamesAll, exclNames)
-    chrExclNames = np.array([name for name in chrNamesAll if name not in exclNames])
-    ieChrs = np.where(np.isin(chrNamesAll, chrExclNames))[0]
+    exclNames = set(['chr2L', 'chr2R', 'chrX'])
+    resultsExcl = hicrepSCC(cool1, cool2, h, dBPMax, bDownSample,
+                            chrNamesAll, exclNames)
+    chrNamesRemain = [name for name in chrNamesAll if name not in exclNames]
+    ieChrs = np.where(np.isin(chrNamesAll, chrNamesRemain))[0]
     assert (results[ieChrs] == resultsExcl).all(), f"""
-        SCC scores between {fmcool1} and {fmcool2} differ from those computed 
-        from the whole set when {chrExclNames} are excluded. The whole genome 
+        SCC scores between {fmcool1} and {fmcool2} differ from those computed
+        from the whole set when {chrNamesRemain} are excluded. The whole genome
         results are: {results} and the subset indices are {iChrs}.
         """
