@@ -99,3 +99,8 @@ You can optionally compute SCC scores for a subset of chromosomes using
 ```
 hicrep mydata1.cool mydata2.cool outputSCC_Subset.txt --h 1 --dBPMax 500000 --chrNames 'myChr1' 'myOtherChr'
 ```
+
+# Related Projects
+
+- [hicrepcm](https://github.com/yardimcilab/hicrepcm) generates a clustermap of multiple Hi-C datasets based on their pairwise hicrep sores
+- [hic2cool](https://github.com/4dn-dcic/hic2cool) converts Hi-C dataset from the *.hic format to *.cool or *.mcool format
